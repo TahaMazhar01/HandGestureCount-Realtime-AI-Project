@@ -1,76 +1,122 @@
-HandCount - Hand Gesture Detection Project
-Python
-OpenCV
-MediaPipe
-Overview
-HandCount is an open-source computer vision project built with MediaPipe and OpenCV for real-time hand gesture detection and finger counting. It processes video input (e.g., from a webcam) to identify hand landmarks and accurately count raised fingers, making it ideal for gesture-based interfaces, interactive applications, educational demos, or accessibility tools.
-Features
+# HandCount - Real-Time Hand Gesture Detection and Finger Counter
 
-Real-Time Detection: Tracks hands and landmarks using MediaPipe's efficient hand model.
-Finger Counting: Analyzes fingertip positions relative to joints to count extended fingers.
-Video Processing: Handles webcam or file-based input with seamless OpenCV integration.
-Customizable: Easily extend for multi-hand support or additional gestures (e.g., thumbs up, victory sign).
+[![Python](https://img.shields.io/badge/Python-3.7+-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-4.0+-green?logo=opencv&logoColor=white)](https://opencv.org/)
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10+-orange?logo=google&logoColor=white)](https://mediapipe.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Tech Stack
+## Overview
 
-Python (3.7+): Primary language for scripting and logic.
-MediaPipe: Hand landmark detection and pose estimation.
-OpenCV: Video capture, image processing, and real-time visualization.
+HandCount is an open-source computer vision project that uses MediaPipe and OpenCV for real-time hand gesture detection. It processes video input from a webcam to identify hand landmarks and count raised fingers accurately. This project is suitable for gesture-based interfaces, interactive applications, or educational tools.
 
-Quick Start
-Prerequisites
+## Key Features
 
-Python 3.7–3.10
-A webcam or compatible video source
+- Real-time hand tracking with MediaPipe's hand landmark model.
+- Finger counting based on fingertip positions relative to joints.
+- Video processing and visualization using OpenCV.
+- Extensible design for additional gestures or multi-hand support.
 
-Installation
+## Tech Stack
 
-Clone the repository:bashgit clone https://github.com/TahaMazhar01/HandCount.git
-cd HandCount
-Install dependencies:bashpip install -r requirements.txt
+| Tool       | Purpose                  | Version |
+|------------|--------------------------|---------|
+| Python    | Core scripting           | 3.7+   |
+| MediaPipe | Hand detection           | 0.10+  |
+| OpenCV    | Video capture and rendering | 4.5+ |
+| NumPy     | Coordinate calculations  | 1.21+ |
 
-Usage
+## Installation
 
-Launch the application:bashpython handcount.py
-Position your hand in front of the camera—the finger count will overlay on the video feed in real-time.
-Exit with Esc or close the window.
+1. Clone the repository:
+   ```
+   git clone https://github.com/TahaMazhar01/HandCount.git
+   cd HandCount
+   ```
 
-For custom video input, modify handcount.py to load a file via cv2.VideoCapture('path/to/video.mp4').
-How It Works
+2. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
-Detection: MediaPipe processes each frame to extract 21 hand landmarks (e.g., fingertips, PIP joints).
-Analysis: Custom heuristics compare y-coordinates of fingertips to base joints—fingers above the base are counted as "raised."
-Rendering: OpenCV draws landmarks, connections, and the count on the frame for intuitive feedback.
+3. Ensure a webcam or video source is available.
 
-Example output: A bounding box around the hand with numbered fingertips and a large overlay showing "Fingers: 3".
-Requirements
-See requirements.txt for full list:
-textmediapipe>=0.10.0
-opencv-python>=4.5.0
-numpy>=1.21.0
-Roadmap
+## Usage
 
-Support for multiple simultaneous hands.
-Expanded gestures (e.g., rock-paper-scissors, sign language basics).
-Performance tweaks for mobile/edge devices.
-Integration with webcams via browser (using WebRTC).
+1. Run the main script:
+   ```
+   python handcount.py
+   ```
 
-Contributions to these features are encouraged!
-Contributing
-Contributions are welcome! To get started:
+2. Position your hand in view of the camera; the finger count will display on the video feed.
 
-Fork the repo and create a feature branch (git checkout -b feature/amazing-feature).
-Commit your changes (git commit -m 'Add amazing feature').
-Push to the branch (git push origin feature/amazing-feature).
-Open a Pull Request.
+3. Exit by pressing `q` or closing the window.
 
-Please adhere to PEP 8 for code style and include tests where possible. Report issues via the Issues tab.
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
-Contact
+To use a video file instead of a webcam, modify the capture line in `handcount.py`:
+```python
+cap = cv2.VideoCapture('path/to/video.mp4')
+```
 
-Author: Taha Mazhar
-GitHub: TahaMazhar01
-Email: tahamazhar01@gmail.com
+## How It Works
 
-Feel free to reach out for questions, collaborations, or feedback. Let's build something awesome together!
+1. Capture frames from the video source using OpenCV.
+2. Detect hand landmarks with MediaPipe, extracting 21 key points (fingertips and joints).
+3. Apply counting logic: Compare y-coordinates of fingertips to base joints; if the tip is higher, the finger is raised.
+4. Render landmarks, connections, and the count overlay on the frame.
+
+Example counting function from `handcount.py`:
+```python
+def count_fingers(landmarks):
+    count = 0
+    # Thumb
+    if landmarks[4].y < landmarks[3].y:
+        count += 1
+    # Other fingers (index to pinky)
+    finger_tips = [8, 12, 16, 20]
+    for tip_id in finger_tips:
+        if landmarks[tip_id].y < landmarks[tip_id - 2].y:
+            count += 1
+    return count
+```
+
+## Requirements
+
+- Python 3.7–3.10
+- Listed in `requirements.txt`:
+  ```
+  mediapipe>=0.10.0
+  opencv-python>=4.5.0
+  numpy>=1.21.0
+  ```
+
+## Roadmap
+
+- Add multi-hand detection.
+- Support additional gestures, such as thumbs up or victory sign.
+- Optimize for mobile devices.
+- Integrate web-based demos.
+
+Suggestions can be submitted via issues.
+
+## Contributing
+
+Contributions are welcome. To contribute:
+
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature-name`.
+3. Commit changes: `git commit -m "Description of changes"`.
+4. Push the branch: `git push origin feature-name`.
+5. Open a pull request.
+
+Follow PEP 8 style guidelines. Include tests where applicable.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+- Author: Taha Mazhar
+- GitHub: [TahaMazhar01](https://github.com/TahaMazhar01)
+- Email: [tahamazhar01@gmail.com](mailto:tahamazhar01@gmail.com)
+
+For questions or feedback, open an issue or email the author.
